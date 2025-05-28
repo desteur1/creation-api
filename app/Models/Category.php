@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory; // Permet d'utiliser les factories pour les tests et le seed
 
+    // Attributs pouvant être assignés en masse
     protected $fillable = ['name', 'description'];
 
-    //une catégorie peut avoir plusieurs événements
+    //Relation : une catégorie peut avoir plusieurs événements
     public function events()
     {
         return $this->hasMany(Event::class);

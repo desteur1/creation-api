@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
+      /**
+     * Exécute la migration : crée la table 'reservations'
      */
     public function up(): void
     {
@@ -20,8 +20,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
+     /**
+     * Annule la migration : supprime la table 'reservations'
      */
     public function down(): void
     {

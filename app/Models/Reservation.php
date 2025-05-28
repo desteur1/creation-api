@@ -3,17 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reservation extends Model
 {
-    use HasFactory;
-    protected $fillable = ['user_id', 'event_id', 'places_reserved'];
-    // une réservation appartient à un utilisateur
+    use HasFactory; // Permet d'utiliser les factories pour les tests et le seed
+
+    // Attributs pouvant être assignés en masse
+    protected $fillable = ['user_id', 'event_id', 'places_reserved','status'];
+    //Relation : une réservation appartient à un utilisateur
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    // une réservation appartient à un événement
+    //Relation : une réservation appartient à un événement
     public function event()
     {
         return $this->belongsTo(Event::class);

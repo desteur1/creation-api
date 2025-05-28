@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Les attributs pouvant être assignés en masse.
      *
      * @var list<string>
      */
@@ -24,7 +24,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Les attributs à cacher lors de la sérialisation.
      *
      * @var list<string>
      */
@@ -34,19 +34,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     *  Les attributs à caster automatiquement.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at' => 'datetime', // Cast en objet DateTime
+            'password' => 'hashed', // Hash automatique du mot de passe
         ];
     }
     
-    // un utilisateur peut avoir plusieurs réservations
+    //Relation :  un utilisateur peut avoir plusieurs réservations
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
