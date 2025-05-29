@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -12,17 +13,21 @@ class ReservationController extends Controller
         return Reservation::with(['user', 'event'])->get();
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'event_id' => 'required|exists:events,id',
-            'status' => 'nullable|string', // par ex. "confirmed", "cancelled"
-            'places_reserved' => 'required|integer|min:1',
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'event_id' => 'required|exists:events,id',
+        'status' => 'nullable|string', // par ex. "confirmed", "cancelled"
+        'places_reserved' => 'required|integer|min:1',
+    ]);
 
-        return Reservation::create($validated);
-    }
+    // Ajoute l'ID de l'utilisateur connecté
+    $validated['user_id'] = Auth::id();
+
+    $reservation = Reservation::create($validated);
+
+    return response()->json($reservation, 201);
+}
 
     public function show(Reservation $reservation)
     {
@@ -45,4 +50,13 @@ class ReservationController extends Controller
         $reservation->delete();
         return response()->json(null, 204);
     }
+    public function getByEvent($event_id)
+{
+    $reservations = Reservation::where('event_id', $event_id)
+        ->with('user') // optionnel : ajoute les infos de l'utilisateur
+        ->get();
+
+    return response()->json($reservations);
+}
+
 }
