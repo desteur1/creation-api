@@ -7,10 +7,33 @@ use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
-      public function index()
+      public function index(Request $request)
     {
+        $query = Reservation::with(['user', 'event']);// Charge les relations 'user' et 'event'si elles existent
+
+        // Filtre par utilisateur si un paramètre 'user_id' est passé
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->input('user_id'));
+        }
+
+        // Filtre par événement si un paramètre 'event_id' est passé
+        if ($request->has('event_id')) {
+            $query->where('event_id', $request->input('event_id'));
+        }
+
+        // Filtre par statut si un paramètre 'status' est passé
+        if ($request->has('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Filtre par date de réservation si un paramètre 'reservation_date' est passé
+        if ($request->has('reservation_date')) {
+            $query->whereDate('created_at', $request->input('reservation_date'));
+        }
+
+
         // Liste toutes les réservations avec l'utilisateur et l'événement liés
-        return Reservation::with(['user', 'event'])->get();
+        return $query->paginate(10);
     }
 
    public function store(Request $request)

@@ -8,9 +8,40 @@ class UserController extends Controller
 {
   
     // Afficher la liste des utilisateurs (ex: pour admin)
-    public function index()
+    public function index(Request $request)
     {
-        return User::all();
+
+        $query = User::query();
+
+     
+
+        // Filtre par adresse e-mail exacte
+        if ($request->has('email')) {
+            $query->where('email', $request->email);
+        }
+
+        // recherche partielle dans le nom ou l'adresse e-mail
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+                });
+
+        }
+
+        // Filtre les utilisateurs créés après une certaine date
+        if ($request->has('created_after')) {
+            $query->whereDate('created_at', '>=', $request->created_after);
+        }
+
+        // Filtre les utilisateurs créés avant une certaine date
+        if ($request->has('created_before')) {
+            $query->whereDate('created_at', '<=', $request->created_before);
+        }
+
+
+        return $query->paginate(10);
     }
 
     // Afficher un utilisateur précis
