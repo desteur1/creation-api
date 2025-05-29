@@ -1,19 +1,29 @@
 <?php
 
-
-
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\AuthController;
 
-// Routes API pour les utilisateurs, catégories, événements et réservations
-Route::apiResource('users', UserController::class);
-//génère automatiquement les toutes les routes RESTful pour le modèle User
-Route::apiResource('categories', CategoryController::class);
-//génère automatiquement les toutes les routes RESTful pour le modèle Event
-Route::apiResource('events', EventController::class);
-//génère automatiquement les toutes les routes RESTful pour le modèle Reservation
-Route::apiResource('reservations', ReservationController::class);
+// Authentification (publique)
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+
+
+
+// Routes protégées par Sanctum
+Route::middleware('auth:sanctum')->group(function () {
+    // Déconnexion
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Ressources protégées
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('events', EventController::class);
+    Route::apiResource('reservations', ReservationController::class);
+    Route::get('/events/{event_id}/reservations', [ReservationController::class, 'getByEvent']);
+    
+});
