@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('location');
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Relation avec categories
             $table->timestamps();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relation avec users, si applicable
         });
     }
 
